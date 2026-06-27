@@ -4,29 +4,93 @@
 #include <dt-bindings/zmk/outputs.h>
 
 #define BASE 0
-#define BT 1
+#define ALT  1
+#define NUM  2
 
 / {
+    behaviors {
+        ctrl_tap: ctrl_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        combo_tab {
+            timeout-ms = <50>;
+            key-positions = <26 27>;    // G + C
+            bindings = <&kp TAB>;
+        };
+
+        combo_esc {
+            timeout-ms = <50>;
+            key-positions = <0 1>;      // Z + J
+            bindings = <&kp ESC>;
+        };
+
+        combo_semicolon {
+            timeout-ms = <50>;
+            key-positions = <24 25>;    // . + ,
+            bindings = <&kp DOT>;       // ; sur AZERTY macOS
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         base_layer {
             label = "BASE";
             bindings = <
-                &kp Z      &kp J      &kp O      &kp E      &kp B        &kp F      &kp D      &kp L      &kp SQT    &kp Q
-                &kp A      &kp I      &kp E      &kp U      &kp W        &kp P      &kp T      &kp S      &kp R      &kp N
-                &kp LCTRL  &kp K      &kp Y      &kp X      &kp DOT    &kp COMMA    &kp G      &kp C      &kp M      &kp H      &kp V      &kp RCTRL
-                &kp DEL    &kp SPACE  &kp LSHFT                         &kp RET    &kp BSPC   &mo BT
+                // Z      J      O      É      B          F      D      L      '      Q
+                &kp W    &kp J  &kp O  &kp N2 &kp B      &kp F  &kp D  &kp L  &kp N4 &kp A
+
+                // A      I      E      U      W          P      T      S      R      N
+                &kp Q    &kp I  &kp E  &kp U  &kp Z      &kp P  &kp T  &kp S  &kp R  &kp N
+
+                // ^/Ctrl K      Y      X      .      ,        G      C      M              H      V      `/Num
+                &ctrl_tap LCTRL LBKT  &kp K  &kp Y  &kp X  &kp COMMA &kp M  &kp G  &kp C  &kp SEMICOLON &kp H  &kp V  &lt NUM BSLH
+
+                // Space   Shift    Del                         Enter   Alt-layer Cmd
+                &kp SPACE &kp LSHFT &kp DEL                     &kp RET &mo ALT   &kp LGUI
             >;
         };
 
-        bt_layer {
-            label = "BT";
+        alt_layer {
+            label = "ALT";
             bindings = <
-                &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &none       &none       &none       &bt BT_CLR      &bt BT_CLR_ALL
-                &out OUT_BLE  &out OUT_USB  &none         &none         &none           &none       &none       &none       &none           &none
-                &trans        &none         &none         &none         &none         &none          &none       &none       &none       &none       &none       &trans
-                &trans        &trans        &trans                                      &trans      &trans      &trans
+                // #                  "      ↑       (      [               ]                 )        =        +             backslash
+                &kp LS(NON_US_BSLH)  &kp N3 &kp UP  &kp N5 &kp RA(LS(N5))  &kp RA(LS(MINUS)) &kp MINUS &kp EQUAL &kp LS(FSLH) &kp RA(LS(DOT))
+
+                // @                  ←        ↓        →        {             }              -      *            /            ~
+                &kp NON_US_BSLH      &kp LEFT &kp DOWN &kp RIGHT &kp RA(N5)   &kp RA(MINUS)  &kp N6 &kp LS(RBKT) &kp LS(DOT)  &kp RA(N)
+
+                // transparent        $        ?         !      :        <          >              _             %            |              &      transparent
+                &trans               &kp RBKT &kp LS(M) &kp N8 &kp FSLH &kp GRAVE  &kp LS(GRAVE) &kp LS(EQUAL) &kp LS(SQT)  &kp RA(LS(L)) &kp N1 &trans
+
+                // transparent transparent transparent          transparent transparent transparent
+                &trans &trans &trans                           &trans &trans &trans
+            >;
+        };
+
+        num_layer {
+            label = "NUM";
+            bindings = <
+                // gauche transparente                         droite: 7 8 9
+                &trans &trans &trans &trans &trans             &trans &trans &kp LS(N7) &kp LS(N8) &kp LS(N9)
+
+                // gauche transparente                         droite: 4 5 6
+                &trans &trans &trans &trans &trans             &trans &trans &kp LS(N4) &kp LS(N5) &kp LS(N6)
+
+                // gauche transparente                         droite: 0 1 2 3 transparent
+                &trans &trans &trans &trans &trans &trans      &trans &kp LS(N0) &kp LS(N1) &kp LS(N2) &kp LS(N3) &trans
+
+                // pouces transparents
+                &trans &trans &trans                           &trans &trans &trans
             >;
         };
     };
