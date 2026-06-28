@@ -119,7 +119,7 @@
                         &kp K    &kp Y    &kp X    &kp LS(COMMA) &kp M  &kp G    &kp C    &kp SEMICOLON &kp H &kp V &num_tog_tap NUM BSLH
 
                 //                              Space    Shift    Delete    Enter    Alt      Cmd
-                                                &kp SPACE &shift_td &kp DELETE &kp RET &mo ALT &kp LGUI
+                                                &kp SPACE &shift_td &kp BSPC &kp RET &mo ALT &kp LGUI
             >;
         };
 
